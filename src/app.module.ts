@@ -9,6 +9,7 @@ import { AdditionalServicesModule } from './additional_services/additional_servi
 import { TicketsModule } from './tickets/tickets.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
           entities: [],
           synchronize: process.env.NODE_ENV !== 'production',
           autoLoadEntities: true,
+          namingStrategy: new SnakeNamingStrategy(),
         };
       },
     }),
