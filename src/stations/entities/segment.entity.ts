@@ -14,11 +14,11 @@ export class Segment {
 
   @OneToOne(() => Station)
   @JoinColumn()
-  d_station_id: Station;
+  dSstation: Station;
 
   @OneToOne(() => Station)
   @JoinColumn()
-  a_station_id: Station;
+  aStation: Station;
 
   @Column('float')
   distance: number;
