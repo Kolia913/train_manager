@@ -24,7 +24,7 @@ export class Wagon {
   type: string;
 
   @Column('float')
-  rental_price: number;
+  rentalPrice: number;
 
   @ManyToOne(() => Train, (train: Train) => train.wagons, {
     onDelete: 'CASCADE',

@@ -10,10 +10,4 @@ export class AdditionalService {
 
   @Column('float')
   price: number;
-
-  // @ManyToMany(() => Wagon, (wagon: Wagon) => wagon.additionalServices, {
-  //   onDelete: 'CASCADE',
-  // })
-  // @JoinTable()
-  // wagons: Wagon[];
 }

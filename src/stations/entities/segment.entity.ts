@@ -14,7 +14,7 @@ export class Segment {
 
   @OneToOne(() => Station)
   @JoinColumn()
-  dSstation: Station;
+  dStation: Station;
 
   @OneToOne(() => Station)
   @JoinColumn()

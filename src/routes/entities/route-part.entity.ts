@@ -16,16 +16,11 @@ export class RoutePart {
   @ManyToOne(() => Segment, { eager: true, onDelete: 'CASCADE' })
   segment: Segment;
 
-  // @ManyToMany(() => Ticket, (ticket: Ticket) => ticket.routeParts, {
-  //   onDelete: 'CASCADE',
-  // })
-  // tickets: Ticket[];
+  @Column('integer')
+  departureTimeMinutes: number;
 
   @Column('integer')
-  departure_time_minutes: number;
-
-  @Column('integer')
-  arrival_time_minutes: number;
+  arrivalTimeMinutes: number;
 
   @Column('integer')
   order: number;
