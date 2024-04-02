@@ -1,13 +1,7 @@
 import { Segment } from 'src/stations/entities/segment.entity';
-import { Ticket } from 'src/tickets/entities/ticket.entity';
+
 import { Wagon } from 'src/trains/entities/wagon.entity';
-import {
-  Column,
-  Entity,
-  ManyToMany,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class RoutePart {
@@ -22,10 +16,10 @@ export class RoutePart {
   @ManyToOne(() => Segment, { eager: true, onDelete: 'CASCADE' })
   segment: Segment;
 
-  @ManyToMany(() => Ticket, (ticket: Ticket) => ticket.routeParts, {
-    onDelete: 'CASCADE',
-  })
-  tickets: Ticket[];
+  // @ManyToMany(() => Ticket, (ticket: Ticket) => ticket.routeParts, {
+  //   onDelete: 'CASCADE',
+  // })
+  // tickets: Ticket[];
 
   @Column('integer')
   departure_time_minutes: number;

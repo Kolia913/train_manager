@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -36,12 +37,9 @@ export class Wagon {
   @OneToMany(() => RoutePart, (routePart: RoutePart) => routePart.wagon)
   routeParts: RoutePart[];
 
-  @ManyToMany(
-    () => AdditionalService,
-    (service: AdditionalService) => service.wagons,
-    {
-      onDelete: 'SET NULL',
-    },
-  )
+  @ManyToMany(() => AdditionalService, {
+    onDelete: 'SET NULL',
+  })
+  @JoinTable({ name: 'wagons_services' })
   additionalServices: AdditionalService[];
 }

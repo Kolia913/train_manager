@@ -1,5 +1,4 @@
-import { Wagon } from 'src/trains/entities/wagon.entity';
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class AdditionalService {
@@ -12,8 +11,9 @@ export class AdditionalService {
   @Column('float')
   price: number;
 
-  @ManyToMany(() => Wagon, (wagon: Wagon) => wagon.additionalServices, {
-    onDelete: 'CASCADE',
-  })
-  wagons: Wagon[];
+  // @ManyToMany(() => Wagon, (wagon: Wagon) => wagon.additionalServices, {
+  //   onDelete: 'CASCADE',
+  // })
+  // @JoinTable()
+  // wagons: Wagon[];
 }

@@ -5,6 +5,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -45,9 +46,10 @@ export class Ticket {
   )
   services: TicketsServices[];
 
-  @ManyToMany(() => RoutePart, (routePart: RoutePart) => routePart.tickets, {
+  @ManyToMany(() => RoutePart, {
     onDelete: 'SET NULL',
   })
+  @JoinTable({ name: 'ticket_route' })
   routeParts: RoutePart[];
 
   @Column('float')
