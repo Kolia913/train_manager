@@ -38,7 +38,7 @@ export class Wagon {
   routeParts: RoutePart[];
 
   @ManyToMany(() => AdditionalService, {
-    onDelete: 'SET NULL',
+    onDelete: 'CASCADE',
   })
   @JoinTable({ name: 'wagons_services' })
   additionalServices: AdditionalService[];
