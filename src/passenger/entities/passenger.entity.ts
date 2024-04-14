@@ -4,10 +4,8 @@ import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -16,10 +14,9 @@ export class Passenger {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Fare, {
+  @ManyToOne(() => Fare, {
     onDelete: 'SET NULL',
   })
-  @JoinColumn()
   fare: Fare;
 
   @ManyToOne(() => User, (user: User) => user.passengers, {

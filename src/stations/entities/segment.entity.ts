@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Station } from './station.entity';
 
 @Entity()
@@ -12,12 +6,10 @@ export class Segment {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => Station)
-  @JoinColumn()
+  @ManyToOne(() => Station)
   dStation: Station;
 
-  @OneToOne(() => Station)
-  @JoinColumn()
+  @ManyToOne(() => Station)
   aStation: Station;
 
   @Column('float')

@@ -28,9 +28,10 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
           password: config.get<string>('DB_PASS'),
           database: config.get<string>('DB_DATABASE'),
           entities: [],
-          synchronize: process.env.NODE_ENV !== 'production',
+          synchronize: true,
           autoLoadEntities: true,
           namingStrategy: new SnakeNamingStrategy(),
+          migrationsTransactionMode: 'all',
         };
       },
     }),

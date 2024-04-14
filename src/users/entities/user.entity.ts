@@ -6,7 +6,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar', { length: 12 })
+  @Column('varchar', { length: 24 })
   phone: string;
 
   @Column('varchar', { length: 255 })
