@@ -4,12 +4,10 @@ import { Seat } from 'src/trains/entities/seat.entity';
 import {
   Column,
   Entity,
-  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { TicketsServices } from './tickets-services.entity';
@@ -25,16 +23,14 @@ export class Ticket {
   })
   passenger: Passenger;
 
-  @OneToOne(() => Seat, {
+  @ManyToOne(() => Seat, {
     onDelete: 'SET NULL',
   })
-  @JoinColumn()
   seat: Seat;
 
-  @OneToOne(() => Fare, {
+  @ManyToOne(() => Fare, {
     onDelete: 'SET NULL',
   })
-  @JoinColumn()
   fare: Fare;
 
   @OneToMany(
@@ -58,10 +54,10 @@ export class Ticket {
   @Column('float')
   priceWithDiscount: number;
 
-  @Column('timestamptz')
+  @Column('timestamp')
   purchaseTimestamp: string;
 
-  @Column('timestamptz', {
+  @Column('timestamp', {
     nullable: true,
   })
   usageTimestamp: string;
