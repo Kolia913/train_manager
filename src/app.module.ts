@@ -10,6 +10,8 @@ import { TicketsModule } from './tickets/tickets.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { AuthModule } from './auth/auth.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
@@ -43,6 +45,8 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
     FaresModule,
     AdditionalServicesModule,
     TicketsModule,
+    AuthModule,
+    SharedModule,
   ],
 })
 export class AppModule {}

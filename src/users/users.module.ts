@@ -12,5 +12,6 @@ import { PassengerModule } from 'src/passenger/passenger.module';
   ],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}
