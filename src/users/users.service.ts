@@ -6,6 +6,7 @@ import { GetUserDto } from './dto/get-user.dto';
 import { PasswordHashService } from 'src/shared/services/password-hash.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PublicUserDto } from './dto/public-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +14,11 @@ export class UsersService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
     private readonly passwordHashService: PasswordHashService,
   ) {}
+
+  async findById(id: number): Promise<PublicUserDto> {
+    const user = await this.usersRepository.findOneBy({ id });
+    return PublicUserDto.fromEntity(user);
+  }
 
   async findByPhone(phone: string): Promise<GetUserDto> {
     const user = await this.usersRepository.findOneBy({
@@ -38,5 +44,16 @@ export class UsersService {
       password: hashedPassword,
     });
     return PublicUserDto.fromEntity(newUser);
+  }
+
+  async update(
+    id: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<PublicUserDto> {
+    const updatedUser = await this.usersRepository.save({
+      id,
+      ...updateUserDto,
+    });
+    return PublicUserDto.fromEntity(updatedUser);
   }
 }

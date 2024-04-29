@@ -1,7 +1,10 @@
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 import { User } from '../entities/user.entity';
 
 export class PublicUserDto {
+  @IsNumber()
+  id: number;
+
   @IsString()
   phone: string;
 
@@ -13,6 +16,7 @@ export class PublicUserDto {
 
   static fromEntity(user: User): PublicUserDto {
     return {
+      id: user.id,
       email: user.email,
       phone: user.phone,
       name: user.name,

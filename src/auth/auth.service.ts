@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordHashService } from 'src/shared/services/password-hash.service';
 import { GetUserDto } from 'src/users/dto/get-user.dto';
+import { PublicUserDto } from 'src/users/dto/public-user.dto';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -35,5 +36,9 @@ export class AuthService {
     return {
       access_token: await this.jwtService.signAsync(payload),
     };
+  }
+
+  async whoAmI(id: number): Promise<PublicUserDto> {
+    return this.usersService.findById(id);
   }
 }

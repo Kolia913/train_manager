@@ -8,6 +8,7 @@ import { PassengerModule } from 'src/passenger/passenger.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
+
     forwardRef(() => PassengerModule),
   ],
   controllers: [UsersController],
