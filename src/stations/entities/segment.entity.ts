@@ -1,5 +1,12 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Station } from './station.entity';
+import { RoutePart } from 'src/routes/entities/route-part.entity';
 
 @Entity()
 export class Segment {
@@ -14,4 +21,7 @@ export class Segment {
 
   @Column('float')
   distance: number;
+
+  @OneToMany(() => RoutePart, (rtPart) => rtPart.segment)
+  route_parts: RoutePart[];
 }

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Segment } from './segment.entity';
 
 @Entity()
 export class Station {
@@ -16,4 +17,7 @@ export class Station {
 
   @Column('double precision')
   lat: number;
+
+  @ManyToMany(() => Segment)
+  segments: Segment[];
 }
