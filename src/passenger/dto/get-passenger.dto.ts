@@ -11,6 +11,9 @@ import { Passenger } from '../entities/passenger.entity';
 import * as dayjs from 'dayjs';
 
 export class GetPassengerDto {
+  @IsNumber()
+  id: number;
+
   @IsString()
   @MaxLength(100)
   firstName: string;
@@ -38,6 +41,7 @@ export class GetPassengerDto {
   }
   static fromEntity(entity: Passenger): GetPassengerDto {
     return {
+      id: entity.id,
       user_id: entity?.user.id,
       fare_id: entity?.fare.id,
       fare: GetFareDto.fromEntity(entity.fare),

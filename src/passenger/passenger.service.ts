@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePassengerDto } from './dto/create-passenger.dto';
 import { Repository } from 'typeorm';
 import { Passenger } from './entities/passenger.entity';
@@ -26,13 +26,12 @@ export class PassengerService {
         user: { id: userId },
         fare: { id: createPassengerDto.fare_id },
         ...createPassengerDto,
-        birthDate: dayjs(
-          createPassengerDto.birthDate,
-          'DD.MM.YYYY',
-        ).toISOString(),
+        birthDate: dayjs(createPassengerDto.birthDate, 'DD.MM.YYYY').format(
+          'YYYY-MM-DD',
+        ),
       })
 
-      .returning('id, user_id, fare_id')
+      .returning('id')
       .execute();
     const insertedPassenger = await this.passengersRepository.findOneOrFail({
       where: {
@@ -60,7 +59,16 @@ export class PassengerService {
   //   return `This action updates a #${id} passenger`;
   // }
 
-  remove(id: number) {
-    return `This action removes a #${id} passenger`;
+  async remove(id: number, userId: number) {
+    const passenger = await this.passengersRepository.findOne({
+      where: { id, user: { id: userId } },
+      relations: ['user', 'fare'],
+    });
+    if (!passenger) {
+      throw new NotFoundException('Passenger not found!');
+    }
+    const removedPassenger = await this.passengersRepository.remove(passenger);
+
+    return GetPassengerDto.fromEntity(removedPassenger);
   }
 }

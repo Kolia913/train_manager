@@ -49,8 +49,10 @@ export class PassengerController {
   //   return this.passengerService.update(+id, updatePassengerDto);
   // }
 
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.passengerService.remove(+id);
+  remove(@Request() req: ExpressRequest, @Param('id') id: string) {
+    return this.passengerService.remove(+id, req.user.sub);
   }
 }
