@@ -4,25 +4,25 @@ import { AdditionalService } from '../../additional_services/entities/additional
 
 @Entity()
 export class TicketsServices {
-  @ManyToOne(() => Ticket, (ticket: Ticket) => ticket.services, {
+  @PrimaryColumn('int')
+  ticketId: number;
+
+  @ManyToOne(() => Ticket, {
     onDelete: 'CASCADE',
   })
   ticket: Ticket;
 
   @PrimaryColumn('int')
-  ticketId: number;
+  additionalServiceId: number;
 
   @ManyToOne(() => AdditionalService, {
     onDelete: 'CASCADE',
   })
   additionalService: AdditionalService;
 
-  @PrimaryColumn('int')
-  additionalServiceId: number;
-
   @Column('float')
   priceWithDiscount: number;
 
   @Column('timestamptz')
-  saleTimestamp: number;
+  saleTimestamp: string;
 }

@@ -6,19 +6,27 @@ import {
   HttpStatus,
   UseGuards,
   Request,
+  Post,
+  Body,
 } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { Request as ExpressRequest } from 'express';
+import { CreateTicketDto } from './dto/create-ticket.dto';
 
 @Controller('tickets')
 export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}
 
-  // @Post()
-  // create(@Body() createTicketDto: CreateTicketDto) {
-  //   return this.ticketsService.create(createTicketDto);
-  // }
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  @Post()
+  create(
+    @Request() req: ExpressRequest,
+    @Body() createTicketDto: CreateTicketDto,
+  ) {
+    return this.ticketsService.create(req.user.sub, createTicketDto);
+  }
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
