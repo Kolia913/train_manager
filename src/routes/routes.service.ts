@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RoutePart } from './entities/route-part.entity';
 import { Repository } from 'typeorm';
+import { RoutePartDto } from './dto/get-route.dto';
+import { WagonRouteDto } from './dto/wagon-route.dto';
 
 @Injectable()
 export class RoutesService {
@@ -23,6 +25,7 @@ export class RoutesService {
       .select('rp')
       .innerJoin('rp.segment', 's')
       .innerJoin('s.dStation', 'st')
+      .leftJoinAndSelect('rp.wagon', 'wagon')
       .where('st.id = :departureStationId', {
         departureStationId,
       })
@@ -37,7 +40,6 @@ export class RoutesService {
         arrivalStationId: arrivalStationId,
       })
       .getRawMany();
-    console.log('arrival', departureRouteParts, 'departure', arrivalRouteParts);
 
     const result = departureRouteParts.map((departure) => {
       const matchingArrival = arrivalRouteParts.find(
@@ -53,22 +55,39 @@ export class RoutesService {
       };
     });
 
-    return result.filter((item) => item.arrival !== null);
+    return WagonRouteDto.fromRawDataArray(
+      result.filter((item) => item.arrival !== null),
+    );
   }
 
   async findFullOne(
     wagonId: number,
     departureOrder: number,
     arrivalOrder: number,
-  ) {
-    const fullRoute = this.rtPartRepository
+  ): Promise<RoutePartDto[]> {
+    const fullRoute = await this.rtPartRepository
       .createQueryBuilder('routePart')
       .where('routePart.wagon_id = :wagonId', { wagonId })
       .andWhere('routePart.order >= :departureOrder', { departureOrder })
       .andWhere('routePart.order <= :arrivalOrder', { arrivalOrder })
-      .getMany();
+      .leftJoinAndSelect(
+        'routePart.segment',
+        'segment',
+        'routePart.segment_id = segment.id',
+      )
+      .leftJoinAndSelect(
+        'segment.aStation',
+        'arrival',
+        'segment.a_station_id = arrival.id',
+      )
+      .leftJoinAndSelect(
+        'segment.dStation',
+        'departure',
+        'segment.d_station_id = departure.id',
+      )
+      .getRawMany();
 
-    return fullRoute;
+    return RoutePartDto.fromRawDataArray(fullRoute);
   }
 
   // update(id: number, updateRouteDto: UpdateRouteDto) {

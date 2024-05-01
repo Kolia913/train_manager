@@ -28,24 +28,26 @@ export class GetPassengerDto {
 
   @IsNumber()
   @IsOptional()
-  fare_id: number;
+  fare_id?: number;
 
   @IsNumber()
-  user_id: number;
+  @IsOptional()
+  user_id?: number;
 
-  user: PublicUserDto;
+  user?: PublicUserDto;
 
-  fare: GetFareDto;
+  fare?: GetFareDto;
+
   static fromEntityArray(entities: Passenger[]): GetPassengerDto[] {
     return entities.map((entity) => this.fromEntity(entity));
   }
   static fromEntity(entity: Passenger): GetPassengerDto {
     return {
       id: entity.id,
-      user_id: entity?.user.id,
-      fare_id: entity?.fare.id,
-      fare: GetFareDto.fromEntity(entity.fare),
-      user: PublicUserDto.fromEntity(entity.user),
+      user_id: entity?.user?.id ? entity.user.id : undefined,
+      fare_id: entity?.fare?.id ? entity.fare.id : undefined,
+      fare: entity.fare ? GetFareDto.fromEntity(entity.fare) : undefined,
+      user: entity.user ? PublicUserDto.fromEntity(entity.user) : undefined,
       birthDate: dayjs(entity.birthDate).format('DD.MM.YYYY'),
       firstName: entity.firstName,
       lastName: entity.lastName,

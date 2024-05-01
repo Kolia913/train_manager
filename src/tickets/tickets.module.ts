@@ -9,10 +9,11 @@ import { PassengerModule } from 'src/passenger/passenger.module';
 import { TrainsModule } from 'src/trains/trains.module';
 import { RoutesModule } from 'src/routes/routes.module';
 import { ReturnedTicket } from './entities/returned-ticket.entity';
+import { Seat } from 'src/trains/entities/seat.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Ticket, TicketsServices, ReturnedTicket]),
+    TypeOrmModule.forFeature([Ticket, TicketsServices, ReturnedTicket, Seat]),
     FaresModule,
     PassengerModule,
     TrainsModule,
