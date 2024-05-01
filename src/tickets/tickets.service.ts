@@ -188,17 +188,61 @@ export class TicketsService {
     return GetTicketDto.fromEntityArray(tickets);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ticket`;
+  async findOne(userId: number, id: number) {
+    const ticket = await this.ticketRepository.findOne({
+      where: {
+        id,
+        passenger: {
+          user: {
+            id: userId,
+          },
+        },
+      },
+      relations: {
+        passenger: true,
+        fare: true,
+        services: {
+          additionalService: true,
+          ticket: false,
+        },
+        routeParts: {
+          segment: {
+            aStation: true,
+            dStation: true,
+          },
+        },
+        seat: {
+          wagon: {
+            train: true,
+          },
+        },
+      },
+    });
+
+    return GetTicketDto.fromEntity(ticket);
   }
 
-  // update(id: number, updateTicketDto: UpdateTicketDto) {
-  //   return `This action updates a #${id} ticket`;
+  async update(userId: number, id: number) {
+    const ticket = await this.ticketRepository.findOne({
+      where: {
+        id,
+        passenger: {
+          user: {
+            id: userId,
+          },
+        },
+      },
+    });
+    ticket.usageTimestamp = dayjs().toISOString();
+    return await this.ticketRepository.save({
+      id: ticket.id,
+      usageTimestamp: ticket.usageTimestamp,
+    });
+  }
+
+  // remove(id: number) {
+  //   return `This action removes a #${id} ticket`;
   // }
-
-  remove(id: number) {
-    return `This action removes a #${id} ticket`;
-  }
 
   async findAllSeats(wagonId: number) {
     const allSeats = await this.seatRepository.find({
