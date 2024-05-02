@@ -7,6 +7,7 @@ import { GetPassengerDto } from './dto/get-passenger.dto';
 import * as dayjs from 'dayjs';
 import * as customParseFormat from 'dayjs/plugin/customParseFormat';
 import { UpdatePassengerDto } from './dto/update-passenger.dto';
+import { Ticket } from 'src/tickets/entities/ticket.entity';
 
 dayjs.extend(customParseFormat);
 
@@ -102,7 +103,24 @@ export class PassengerService {
     if (!passenger) {
       throw new NotFoundException('Passenger not found!');
     }
-    const removedPassenger = await this.passengersRepository.remove(passenger);
+    const removedPassenger =
+      await this.passengersRepository.manager.transaction(
+        'READ COMMITTED',
+        async (transactionEntityManger) => {
+          const tickets = await transactionEntityManger.find(Ticket, {
+            where: {
+              passenger: {
+                id: passenger.id,
+              },
+            },
+          });
+          await transactionEntityManger.remove(tickets);
+          const deletedPassenger =
+            await transactionEntityManger.remove(passenger);
+
+          return deletedPassenger;
+        },
+      );
 
     return GetPassengerDto.fromEntity(removedPassenger);
   }
