@@ -16,10 +16,10 @@ export class PublicUserDto {
 
   static fromEntity(user: User): PublicUserDto {
     return {
-      id: user.id,
-      email: user.email,
-      phone: user.phone,
-      name: user.name,
+      id: user?.id,
+      email: user?.email,
+      phone: user?.phone,
+      name: user?.name,
     };
   }
 }
