@@ -282,4 +282,45 @@ export class TicketsService {
 
     return markedSeats;
   }
+
+  async getStatsByPassenger(passengerId: number) {
+    // const distance = await this.ticketRepository
+    //   .createQueryBuilder()
+    //   .select('SUM(segment.distance)', 'distance')
+    //   .addSelect('COUNT(DISTINCT t.id)', 'purchases')
+    //   .from('ticket', 't')
+    //   .leftJoin('t.routeParts', 'rp')
+    //   .leftJoin('rp.segment', 'segment')
+    //   .where('t.passenger_id = :passengerId', { passengerId })
+    //   .getRawOne();
+
+    const statsDistance = await this.ticketRepository.manager.query(
+      `SELECT SUM(s.distance) as distance, COUNT(DISTINCT t.id) as purchases FROM ticket t
+          JOIN tickets_services ts ON ts.ticket_id = t.id
+          INNER JOIN ticket_route tr ON tr.ticket_id = t.id
+          INNER JOIN route_part rp ON rp.id = tr.route_part_id
+          JOIN segment s ON rp.segment_id = s.id
+      WHERE t.passenger_id = $1;`,
+      [passengerId],
+    );
+
+    const servicesStats = await this.ticketRepository.manager.query(
+      `
+      SELECT a_s.name as name, COUNT(*) as unit_count, SUM(s.price_with_discount) FROM ticket t
+        JOIN tickets_services s ON s.ticket_id = t.id 
+        JOIN additional_service a_s ON s.additional_service_id = a_s.id 
+      WHERE t.passenger_id = $1 GROUP BY a_s.name;`,
+      [passengerId],
+    );
+
+    if (!statsDistance?.length && !servicesStats?.length) {
+      throw new NotFoundException('No stats yet');
+    }
+
+    const stats = {
+      ...statsDistance[0],
+      services: servicesStats,
+    };
+    return stats;
+  }
 }

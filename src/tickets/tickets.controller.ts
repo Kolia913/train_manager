@@ -60,4 +60,10 @@ export class TicketsController {
   findAllSeatsInWagon(@Param('id') wagonId: string) {
     return this.ticketsService.findAllSeats(+wagonId);
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('/stats/:id')
+  findPassengerStats(@Param('id') passengerId: string) {
+    return this.ticketsService.getStatsByPassenger(+passengerId);
+  }
 }

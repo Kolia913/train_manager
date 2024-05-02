@@ -34,6 +34,7 @@ import { SharedModule } from './shared/shared.module';
           autoLoadEntities: true,
           namingStrategy: new SnakeNamingStrategy(),
           migrationsTransactionMode: 'all',
+          parseInt8: true,
         };
       },
     }),
