@@ -7,10 +7,11 @@ import { Wagon } from './entities/wagon.entity';
 import { Seat } from './entities/seat.entity';
 import { RoutesModule } from 'src/routes/routes.module';
 import { AdditionalServicesModule } from 'src/additional_services/additional_services.module';
+import { RoutePart } from 'src/routes/entities/route-part.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Train, Wagon, Seat]),
+    TypeOrmModule.forFeature([Train, Wagon, Seat, RoutePart]),
     forwardRef(() => RoutesModule),
     AdditionalServicesModule,
   ],

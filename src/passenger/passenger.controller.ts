@@ -9,11 +9,13 @@ import {
   Request,
   HttpCode,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 import { PassengerService } from './passenger.service';
 import { CreatePassengerDto } from './dto/create-passenger.dto';
 import { Request as ExpressRequest } from 'express';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { UpdatePassengerDto } from './dto/update-passenger.dto';
 
 @Controller('passenger')
 export class PassengerController {
@@ -36,18 +38,23 @@ export class PassengerController {
     return this.passengerService.findAll(req.user.sub);
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.passengerService.findOne(+id);
-  // }
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  @Get(':id')
+  findOne(@Request() req: ExpressRequest, @Param('id') id: string) {
+    return this.passengerService.findOne(req.user.sub, +id);
+  }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updatePassengerDto: UpdatePassengerDto,
-  // ) {
-  //   return this.passengerService.update(+id, updatePassengerDto);
-  // }
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard)
+  @Patch(':id')
+  update(
+    @Request() req: ExpressRequest,
+    @Param('id') id: string,
+    @Body() updatePassengerDto: UpdatePassengerDto,
+  ) {
+    return this.passengerService.update(req.user.sub, +id, updatePassengerDto);
+  }
 
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)

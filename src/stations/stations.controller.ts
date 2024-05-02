@@ -1,32 +1,26 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { StationsService } from './stations.service';
 
 @Controller('stations')
 export class StationsController {
   constructor(private readonly stationsService: StationsService) {}
 
-  // @Post()
-  // create(@Body() createStationDto: CreateStationDto) {
-  //   return this.stationsService.create(createStationDto);
-  // }
-
+  @HttpCode(HttpStatus.OK)
   @Get()
   findAll() {
     return this.stationsService.findAll();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.stationsService.findOne(+id);
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateStationDto: UpdateStationDto) {
-  //   return this.stationsService.update(+id, updateStationDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.stationsService.remove(+id);
-  // }
+  @HttpCode(HttpStatus.OK)
+  @Post('/map-to-segments')
+  mapToSegments(@Body() body: { station_ids: number[] }) {
+    return this.stationsService.mapStationsToSegments(body.station_ids);
+  }
 }

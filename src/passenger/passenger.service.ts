@@ -6,6 +6,7 @@ import { Passenger } from './entities/passenger.entity';
 import { GetPassengerDto } from './dto/get-passenger.dto';
 import * as dayjs from 'dayjs';
 import * as customParseFormat from 'dayjs/plugin/customParseFormat';
+import { UpdatePassengerDto } from './dto/update-passenger.dto';
 
 dayjs.extend(customParseFormat);
 
@@ -51,13 +52,47 @@ export class PassengerService {
     return GetPassengerDto.fromEntityArray(passengers);
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} passenger`;
-  // }
+  async findOne(userId: number, id: number) {
+    const passenger = await this.passengersRepository.findOne({
+      relations: ['fare', 'user'],
+      where: { user: { id: userId }, id },
+    });
+    return GetPassengerDto.fromEntity(passenger);
+  }
 
-  // update(id: number, updatePassengerDto: UpdatePassengerDto) {
-  //   return `This action updates a #${id} passenger`;
-  // }
+  async update(
+    userId: number,
+    id: number,
+    updatePassengerDto: UpdatePassengerDto,
+  ) {
+    const passenger = await this.passengersRepository.findOne({
+      where: {
+        user: {
+          id: userId,
+        },
+        id,
+      },
+    });
+    if (!passenger) {
+      throw new NotFoundException('Passenger not found!');
+    }
+    const updatedPassenger = await this.passengersRepository.save({
+      id: passenger.id,
+      ...updatePassengerDto,
+    });
+
+    const fetchedUpdatedPassenger = await this.passengersRepository.findOne({
+      where: {
+        user: {
+          id: userId,
+        },
+        id: updatedPassenger.id,
+      },
+      relations: ['fare', 'user'],
+    });
+
+    return GetPassengerDto.fromEntity(fetchedUpdatedPassenger);
+  }
 
   async remove(id: number, userId: number) {
     const passenger = await this.passengersRepository.findOne({
