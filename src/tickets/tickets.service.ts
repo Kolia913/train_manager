@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { In, Repository } from 'typeorm';
+import { In, IsNull, Repository } from 'typeorm';
 import { Seat } from 'src/trains/entities/seat.entity';
 import { Ticket } from './entities/ticket.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -36,7 +36,10 @@ export class TicketsService {
   ) {}
   async create(userId: number, createTicketDto: CreateTicketDto) {
     const isSeatBooked = await this.ticketRepository.exists({
-      where: { seat: { id: createTicketDto.seat_id } },
+      where: {
+        seat: { id: createTicketDto.seat_id },
+        usageTimestamp: IsNull(),
+      },
     });
     if (isSeatBooked) {
       throw new BadRequestException(
@@ -252,7 +255,8 @@ export class TicketsService {
     const subQuery = this.ticketRepository
       .createQueryBuilder('ticket')
       .select('ticket.seat_id')
-      .where('ticket.seat_id = seat.id');
+      .where('ticket.seat_id = seat.id')
+      .andWhere('ticket.usage_timestamp IS NULL');
 
     const query = this.seatRepository
       .createQueryBuilder('seat')
