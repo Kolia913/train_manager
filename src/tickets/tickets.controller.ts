@@ -9,6 +9,7 @@ import {
   Post,
   Body,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
@@ -32,8 +33,8 @@ export class TicketsController {
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthGuard)
   @Get()
-  findAll(@Request() req: ExpressRequest) {
-    return this.ticketsService.findAll(req.user.sub);
+  findAll(@Request() req: ExpressRequest, @Query('order') order: string) {
+    return this.ticketsService.findAll(req.user.sub, order as 'ASC' | 'DESC');
   }
 
   @HttpCode(HttpStatus.OK)

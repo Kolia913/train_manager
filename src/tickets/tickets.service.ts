@@ -155,7 +155,7 @@ export class TicketsService {
     return createdTicket;
   }
 
-  async findAll(userId: number) {
+  async findAll(userId: number, order: 'ASC' | 'DESC' = 'DESC') {
     const tickets = await this.ticketRepository.find({
       where: {
         passenger: {
@@ -165,7 +165,7 @@ export class TicketsService {
         },
       },
       order: {
-        purchaseTimestamp: 'DESC',
+        purchaseTimestamp: order,
       },
       relations: {
         passenger: true,
@@ -243,9 +243,31 @@ export class TicketsService {
     });
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} ticket`;
-  // }
+  async remove(id: number) {
+    const ticket = await this.ticketRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    await this.ticketRepository.manager.transaction(
+      'READ COMMITTED',
+      async (transactionEntityManger) => {
+        const ticketServices = await transactionEntityManger.find(
+          TicketsServices,
+          {
+            where: {
+              ticket: {
+                id,
+              },
+            },
+          },
+        );
+
+        await transactionEntityManger.remove(TicketsServices, ticketServices);
+        await transactionEntityManger.remove(ticket);
+      },
+    );
+  }
 
   async findAllSeats(wagonId: number) {
     const allSeats = await this.seatRepository.find({
@@ -284,16 +306,6 @@ export class TicketsService {
   }
 
   async getStatsByPassenger(passengerId: number) {
-    // const distance = await this.ticketRepository
-    //   .createQueryBuilder()
-    //   .select('SUM(segment.distance)', 'distance')
-    //   .addSelect('COUNT(DISTINCT t.id)', 'purchases')
-    //   .from('ticket', 't')
-    //   .leftJoin('t.routeParts', 'rp')
-    //   .leftJoin('rp.segment', 'segment')
-    //   .where('t.passenger_id = :passengerId', { passengerId })
-    //   .getRawOne();
-
     const statsDistance = await this.ticketRepository.manager.query(
       `SELECT SUM(s.distance) as distance, COUNT(DISTINCT t.id) as purchases FROM ticket t
           JOIN tickets_services ts ON ts.ticket_id = t.id
